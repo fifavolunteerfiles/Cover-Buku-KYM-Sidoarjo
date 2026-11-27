@@ -12,6 +12,7 @@ import {
 } from './utils/catalog';
 import { triggerHaptic } from './utils/haptics';
 import { shouldShowSplash } from './utils/splash';
+import { KYM_LOGO_PATH, resolvePublicAsset } from './utils/assets';
 import { AppPage, HeaderBar } from './components/HeaderBar';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { SummaryStrip } from './components/SummaryStrip';
@@ -213,7 +214,7 @@ export default function App() {
                 <section className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
                   <div className="flex max-w-2xl flex-col items-center gap-3 sm:flex-row sm:items-start sm:gap-4">
                     <img
-                      src="/assets/aistudio/IMG_8414_ecf9e34e.JPG"
+                      src={resolvePublicAsset(KYM_LOGO_PATH)}
                       alt="Logo Komunitas Yuk Menulis Sidoarjo"
                       className="h-16 w-16 shrink-0 rounded-full border border-slate-200 bg-white object-contain p-0.5 shadow-xs sm:h-16 sm:w-16 dark:border-slate-700"
                     />

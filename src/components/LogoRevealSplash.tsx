@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { getSplashDurationMs } from '../utils/splash';
+import { KYM_LOGO_PATH, resolvePublicAsset } from '../utils/assets';
 
 interface LogoRevealSplashProps {
   visible: boolean;
@@ -137,7 +138,7 @@ export function LogoRevealSplash({ visible, onFinish }: LogoRevealSplashProps) {
                 className="relative z-10 h-32 w-32 overflow-hidden rounded-full border-2 border-white bg-white p-1.5 shadow-[0_20px_50px_-12px_rgba(15,76,129,0.28)] ring-1 ring-blue-900/10 sm:h-40 sm:w-40 dark:border-slate-800 dark:ring-blue-300/20"
               >
                 <img
-                  src="/assets/aistudio/IMG_8414_ecf9e34e.JPG"
+                  src={resolvePublicAsset(KYM_LOGO_PATH)}
                   alt="Logo Komunitas Yuk Menulis Sidoarjo"
                   className="h-full w-full rounded-full object-contain"
                 />

@@ -10,6 +10,7 @@ import {
   filterAndSortCatalog,
 } from '../utils/catalog';
 import { triggerHaptic } from '../utils/haptics';
+import { KYM_LOGO_PATH, resolvePublicAsset } from '../utils/assets';
 
 interface CoverGalleryProps {
   books: BookRecord[];
@@ -116,7 +117,7 @@ export function CoverGallery({ books, stats }: CoverGalleryProps) {
       <section className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
         <div className="flex max-w-2xl flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
           <img
-            src="/assets/aistudio/IMG_8414_ecf9e34e.JPG"
+            src={resolvePublicAsset(KYM_LOGO_PATH)}
             alt="Logo Komunitas Yuk Menulis Sidoarjo"
             className="h-14 w-14 shrink-0 rounded-full border border-slate-200 bg-white object-contain p-0.5 shadow-xs sm:h-14 sm:w-14 dark:border-slate-700"
           />

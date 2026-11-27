@@ -1,6 +1,7 @@
 import { Moon, Sun } from 'lucide-react';
 import { motion } from 'motion/react';
 import { triggerHaptic } from '../utils/haptics';
+import { KYM_LOGO_PATH, resolvePublicAsset } from '../utils/assets';
 
 export type AppPage = 'ringkasan' | 'katalog';
 
@@ -25,7 +26,7 @@ export function HeaderBar({ activePage, onSelectPage, isDark, onToggleDark }: He
           className="inline-flex items-center gap-2.5 rounded-md font-display text-base font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 sm:text-lg cursor-pointer dark:text-slate-100 dark:focus-visible:ring-offset-slate-900"
         >
           <img
-            src="/assets/aistudio/IMG_8414_ecf9e34e.JPG"
+            src={resolvePublicAsset(KYM_LOGO_PATH)}
             alt="Logo KYM Sidoarjo"
             className="h-9 w-9 shrink-0 rounded-full bg-white object-contain p-0.5 ring-1 ring-slate-200 sm:h-10 sm:w-10 dark:ring-slate-700"
           />

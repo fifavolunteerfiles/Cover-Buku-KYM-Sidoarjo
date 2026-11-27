@@ -1,4 +1,5 @@
 import type { RawDriveFile } from '../data/driveFiles';
+import { resolvePublicAsset } from './assets';
 
 export type BookSeries = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 export type SchoolLevel = 'SD' | 'SMP' | 'SMA' | 'SMK' | 'SLB' | 'Lainnya';
@@ -115,7 +116,7 @@ export function parseDriveFile(file: RawDriveFile, index: number): BookRecord {
     driveUrl: `https://drive.google.com/file/d/${file.id}/view`,
     thumbnailUrl: `https://drive.google.com/thumbnail?id=${file.id}&sz=w600`,
     previewUrl: `https://drive.google.com/thumbnail?id=${file.id}&sz=w1600`,
-    localCoverUrl: `/covers/${index}.jpg`,
+    localCoverUrl: resolvePublicAsset(`covers/${index}.jpg`),
   };
 }
 
