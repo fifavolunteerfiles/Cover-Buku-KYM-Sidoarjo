@@ -116,7 +116,7 @@ export function parseDriveFile(file: RawDriveFile, index: number): BookRecord {
     driveUrl: `https://drive.google.com/file/d/${file.id}/view`,
     thumbnailUrl: `https://drive.google.com/thumbnail?id=${file.id}&sz=w600`,
     previewUrl: `https://drive.google.com/thumbnail?id=${file.id}&sz=w1600`,
-    localCoverUrl: resolvePublicAsset(`covers/${index}.jpg`),
+    localCoverUrl: `https://drive.google.com/thumbnail?id=${file.id}&sz=w1600`,
   };
 }
 

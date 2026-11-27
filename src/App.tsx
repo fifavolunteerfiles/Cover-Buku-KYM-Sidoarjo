@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, SearchX } from 'lucide-react';
 import { MotionConfig, motion } from 'motion/react';
-import { DRIVE_FILES } from './data/driveFiles';
+import { DRIVE_FILES, type RawDriveFile } from './data/driveFiles';
 import {
   BookSeries,
   SchoolLevel,
   SortOption,
-  buildCatalog,
   computeCatalogStats,
   filterAndSortCatalog,
 } from './utils/catalog';
+import { buildSyncedCatalog } from './utils/driveSync';
 import { triggerHaptic } from './utils/haptics';
 import { shouldShowSplash } from './utils/splash';
 import { KYM_LOGO_PATH, resolvePublicAsset } from './utils/assets';
@@ -40,10 +40,80 @@ function useIsDesktop() {
 }
 
 const THEME_STORAGE_KEY = 'cover-sidoarjo-theme';
+const LIVE_SYNC_INTERVAL_MS = 60_000;
 
 export default function App() {
   const isDesktop = useIsDesktop();
-  const allBooks = useMemo(() => buildCatalog(DRIVE_FILES), []);
+  const [liveDriveFiles, setLiveDriveFiles] = useState<RawDriveFile[] | null>(null);
+  const lastSyncSignatureRef = useRef<string>('');
+  const lastSyncAtRef = useRef<number>(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const syncCatalog = async (force = false) => {
+      const now = Date.now();
+      if (!force && now - lastSyncAtRef.current < 25_000) {
+        return;
+      }
+      lastSyncAtRef.current = now;
+
+      try {
+        const res = await fetch(resolvePublicAsset('api/catalog'), {
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) return;
+        const payload = (await res.json()) as { files?: unknown };
+        if (!Array.isArray(payload?.files) || payload.files.length === 0) return;
+
+        const validFiles = payload.files.filter(
+          (item): item is RawDriveFile =>
+            Boolean(item) &&
+            typeof item === 'object' &&
+            typeof (item as RawDriveFile).id === 'string' &&
+            typeof (item as RawDriveFile).name === 'string'
+        );
+        if (validFiles.length === 0 || cancelled) return;
+
+        const signature = validFiles.map((f) => `${f.id}:${f.name}`).join('|');
+        if (signature !== lastSyncSignatureRef.current) {
+          lastSyncSignatureRef.current = signature;
+          setLiveDriveFiles(validFiles);
+        }
+      } catch {
+        // Silently retain bundled snapshot when offline or on pure static hosting
+      }
+    };
+
+    void syncCatalog(true);
+
+    const onVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        void syncCatalog(false);
+      }
+    };
+
+    const intervalId = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        void syncCatalog(true);
+      }
+    }, LIVE_SYNC_INTERVAL_MS);
+
+    window.addEventListener('focus', onVisibilityOrFocus);
+    document.addEventListener('visibilitychange', onVisibilityOrFocus);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', onVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', onVisibilityOrFocus);
+    };
+  }, []);
+
+  const allBooks = useMemo(
+    () => buildSyncedCatalog(liveDriveFiles, DRIVE_FILES),
+    [liveDriveFiles]
+  );
   const stats = useMemo(() => computeCatalogStats(allBooks), [allBooks]);
 
   const [showSplash, setShowSplash] = useState<boolean>(() =>
@@ -224,7 +294,7 @@ export default function App() {
                       </h1>
                       <p className="mt-1.5 text-sm leading-relaxed text-slate-600 sm:mt-2 sm:text-base dark:text-slate-400">
                         Data lengkap nomor urut, nama sekolah, judul buku antologi puisi, dan kode buku
-                        dari seluruh 382 buku terdata.
+                        dari seluruh {allBooks.length} buku terdata.
                       </p>
                     </div>
                   </div>

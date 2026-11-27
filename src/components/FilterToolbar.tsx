@@ -233,7 +233,7 @@ export function FilterToolbar({
             }}
             className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:border-blue-500"
           >
-            <option value="default">Urut: Nomor Asli (1–382)</option>
+            <option value="default">Urut: Nomor Asli (1–{totalCount})</option>
             <option value="code-asc">Urut: Kode Buku (A–F)</option>
             <option value="code-desc">Urut: Kode Buku (F–A)</option>
             <option value="school-asc">Urut: Sekolah (A–Z)</option>
